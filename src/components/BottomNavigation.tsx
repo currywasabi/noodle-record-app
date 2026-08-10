@@ -17,16 +17,17 @@ export default function BottomNavigation({
   return (
     <nav
       style={{
-        position: "absolute",
-        top: "90%",
-        left: "50%",
-        transform: "translateX(-50%)",
+        position: "fixed",
+        bottom: 0,
+        left: 0,
+        right: 0,
+        height: 64,
         display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
         gap: 4,
         background: "#ffffff",
-        borderRadius: 999,
-        padding: 6,
-        boxShadow: "0 8px 20px rgba(0,0,0,0.18), 0 2px 6px rgba(0,0,0,0.08)",
+        borderTop: "1px solid #f2f4f6",
         zIndex: 50,
       }}
     >
@@ -39,13 +40,13 @@ export default function BottomNavigation({
             style={{
               border: "none",
               cursor: "pointer",
+              background: "transparent",
               padding: "10px 22px",
               borderRadius: 999,
               fontSize: 13,
               fontWeight: active ? 700 : 500,
-              background: active ? "#191f28" : "transparent",
-              color: active ? "#ffffff" : "#9ca3af",
-              transition: "background 0.15s, color 0.15s",
+              color: active ? "#191f28" : "#9ca3af",
+              transition: "color 0.15s",
             }}
           >
             {t.label}
