@@ -10,8 +10,7 @@ const DISH_SPECS: DishSpec[] = [
   { file: "라면냄비.png" },
   { file: "냉면그릇.png" },
   { file: "일반그릇.png" },
-  { file: "컵라면소컵.png" },
-  { file: "컵라면대컵.png" },
+  { file: "사발면.png" },
   { file: "파스타그릇.png" },
 ];
 
@@ -23,48 +22,35 @@ const OVERLAP_TABLE: Record<DishFile, Record<DishFile, number>> = {
     "라면냄비.png": 190,
     "냉면그릇.png": 38,
     "일반그릇.png": 150,
-    "컵라면소컵.png": 220,
-    "컵라면대컵.png": 220,
+    "사발면.png": 220,
     "파스타그릇.png": 38,
   },
   "냉면그릇.png": {
     "라면냄비.png": 190,
     "냉면그릇.png": 80,
     "일반그릇.png": 190,
-    "컵라면소컵.png": 210,
-    "컵라면대컵.png": 210,
+    "사발면.png": 210,
     "파스타그릇.png": 45,
   },
   "일반그릇.png": {
     "라면냄비.png": 150,
     "냉면그릇.png": 20,
     "일반그릇.png": 230,
-    "컵라면소컵.png": 225,
-    "컵라면대컵.png": 180,
+    "사발면.png": 225,
     "파스타그릇.png": 65,
   },
-  "컵라면소컵.png": {
-    "라면냄비.png": 1,
-    "냉면그릇.png": 1,
-    "일반그릇.png": 3,
-    "컵라면소컵.png": 220,
-    "컵라면대컵.png": 1,
-    "파스타그릇.png": 1,
-  },
-  "컵라면대컵.png": {
+  "사발면.png": {
     "라면냄비.png": 0,
     "냉면그릇.png": 5,
     "일반그릇.png": 75,
-    "컵라면소컵.png": 220,
-    "컵라면대컵.png": 210,
+    "사발면.png": 220,
     "파스타그릇.png": 18,
   },
   "파스타그릇.png": {
     "라면냄비.png": 40,
     "냉면그릇.png": 50,
     "일반그릇.png": 65,
-    "컵라면소컵.png": 60,
-    "컵라면대컵.png": 60,
+    "사발면.png": 60,
     "파스타그릇.png": 60,
   },
 };
@@ -144,7 +130,7 @@ export default function HomePage({ onChangeTab }: HomePageProps) {
                 src={`/image/dishes/${b.file}`}
                 alt=""
                 style={{
-                  zoom: 0.2,
+                  zoom: 0.15,
                   display: "block",
                   marginBottom: -overlap, // i===0일 때 overlap이 0이라 자동으로 안전
                 }}
