@@ -1,80 +1,19 @@
-import { useState } from "react";
 import type { AppTab } from "../types";
-import { Top } from "@toss/tds-mobile";
-
-interface DishSpec {
-  file: string;
-}
-
-const DISH_SPECS: DishSpec[] = [
-  { file: "라면냄비.png" },
-  { file: "냉면그릇.png" },
-  { file: "일반그릇.png" },
-  { file: "사발면.png" },
-  { file: "파스타그릇.png" },
-];
-
-type DishFile = (typeof DISH_SPECS)[number]["file"];
-
-// OVERLAP_TABLE[아래 그릇][위 그릇] = 겹치는 정도(px, zoom 0.2 기준)
-const OVERLAP_TABLE: Record<DishFile, Record<DishFile, number>> = {
-  "라면냄비.png": {
-    "라면냄비.png": 190,
-    "냉면그릇.png": 38,
-    "일반그릇.png": 150,
-    "사발면.png": 220,
-    "파스타그릇.png": 38,
-  },
-  "냉면그릇.png": {
-    "라면냄비.png": 190,
-    "냉면그릇.png": 80,
-    "일반그릇.png": 190,
-    "사발면.png": 210,
-    "파스타그릇.png": 45,
-  },
-  "일반그릇.png": {
-    "라면냄비.png": 150,
-    "냉면그릇.png": 20,
-    "일반그릇.png": 230,
-    "사발면.png": 225,
-    "파스타그릇.png": 65,
-  },
-  "사발면.png": {
-    "라면냄비.png": 0,
-    "냉면그릇.png": 5,
-    "일반그릇.png": 75,
-    "사발면.png": 220,
-    "파스타그릇.png": 18,
-  },
-  "파스타그릇.png": {
-    "라면냄비.png": 40,
-    "냉면그릇.png": 50,
-    "일반그릇.png": 65,
-    "사발면.png": 60,
-    "파스타그릇.png": 60,
-  },
-};
-
-const DEFAULT_OVERLAP = 20;
-
-function getOverlap(below: DishFile | undefined, above: DishFile): number {
-  if (!below) return 0; // 맨 아래 첫 그릇은 겹칠 대상이 없음
-  return OVERLAP_TABLE[below]?.[above] ?? DEFAULT_OVERLAP;
-}
+import { Top, Button, Modal } from "@toss/tds-mobile";
+import { useState } from "react";
+import { useDishStack, DISH_FILES } from "../hooks/useDishStack";
+import DishStack from "../components/DishStack";
 
 interface HomePageProps {
   onChangeTab: (tab: AppTab) => void;
 }
 
 export default function HomePage({ onChangeTab }: HomePageProps) {
-  const [stack, setStack] = useState<DishSpec[]>([]);
-
-  const addDish = (spec: DishSpec) => {
-    setStack((s) => [...s, spec]);
-  };
+  const { stack, isReady, addDish, getOverlap } = useDishStack();
+  const [open, setOpen] = useState(false);
 
   return (
-    <div style={{ padding: "16px 16px 24px" }}>
+    <div style={{ padding: "16px 16px 24px", position: "relative" }}>
       <Top
         title={
           <Top.TitleParagraph size={28}>
@@ -86,59 +25,48 @@ export default function HomePage({ onChangeTab }: HomePageProps) {
         }
       />
 
-      {/* 그릇쌓기 */}
-      <div style={{ marginBottom: 24 }}>
-        <div
+      <Modal open={open} onOpenChange={setOpen}>
+        <Modal.Overlay />
+        <Modal.Content
           style={{
+            padding: "32px 20px 20px 20px",
             display: "flex",
             flexDirection: "column",
-            width: "100px",
-            gap: 8,
-            margin: "16px 0",
+            alignItems: "center",
+            textAlign: "center",
           }}
         >
-          {DISH_SPECS.map((spec) => (
-            <button key={spec.file} onClick={() => addDish(spec)}>
+          {DISH_FILES.map((file) => (
+            <button
+              key={file}
+              onClick={() => {
+                addDish(file);
+                setOpen(false);
+              }}
+            >
               <img
-                src={`/image/dishes/${spec.file}`}
+                src={`/image/dishes/${file}.png`}
                 alt=""
                 style={{ width: "50%", backgroundSize: "cover" }}
               />
-              {spec.file.replace(".png", "")}
+              {file}
             </button>
           ))}
-          <button onClick={() => setStack([])}>리셋</button>
-        </div>
+          <Button
+            display="block"
+            color="primary"
+            onClick={() => setOpen(false)}
+          >
+            확인
+          </Button>
+        </Modal.Content>
+      </Modal>
 
-        <div
-          style={{
-            position: "absolute",
-            bottom: 64, //하단바 높이
-            left: "50%",
-            transform: "translateX(-50%)",
-            display: "flex",
-            flexDirection: "column-reverse",
-            alignItems: "center",
-          }}
-        >
-          {stack.map((b, i) => {
-            const below = i === 0 ? undefined : stack[i - 1].file;
-            const overlap = getOverlap(below, b.file);
-            return (
-              <img
-                key={i}
-                src={`/image/dishes/${b.file}`}
-                alt=""
-                style={{
-                  zoom: 0.15,
-                  display: "block",
-                  marginBottom: -overlap, // i===0일 때 overlap이 0이라 자동으로 안전
-                }}
-              />
-            );
-          })}
-        </div>
-      </div>
+      <button onClick={() => setOpen(true)} disabled={!isReady}>
+        {isReady ? "+ 그릇 추가" : "불러오는 중..."}
+      </button>
+
+      <DishStack stack={stack} getOverlap={getOverlap} bottomOffset={64} />
     </div>
   );
 }

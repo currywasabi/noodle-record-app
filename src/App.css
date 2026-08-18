@@ -7,6 +7,8 @@
 
 @media (min-width: 481px) {
   #root {
+    /* mask 테스트용 배경 */
+    /* background-color: #333d4b; */
     background-color: #ffffff;
     max-width: 480px;
     margin: 0 auto;
